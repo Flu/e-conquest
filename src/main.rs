@@ -41,13 +41,15 @@ struct Laser;
 struct Speed {
     vert: f32,
     horz: f32,
+    rot: f32
 }
 
 impl Default for Speed {
     fn default() -> Self {
         Speed {
             vert: 500.,
-            horz: 500.
+            horz: 500.,
+            rot: 1.
         }
     }
 }

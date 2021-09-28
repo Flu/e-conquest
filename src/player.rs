@@ -26,14 +26,14 @@ fn player_spawn(
         material: materials.player_materials.clone(),
         transform: Transform {
             translation: Vec3::new(0., bottom + 75./2. + 10., 10.),
-            scale: Vec3::new(0.1,0.1,1.),
+            scale: Vec3::new(0.4,0.4,1.),
             ..Default::default()
         },
         ..Default::default()
     })
     .insert(Player)
     .insert(PlayerReadyFire(true))
-    .insert(Speed { horz: 200., vert: 200.});
+    .insert(Speed { horz: 200., vert: 200., ..Default::default()});
 }
 
 fn player_movement(
@@ -58,6 +58,14 @@ fn player_movement(
             0.
         };
 
+        let rotation = if keyboard_input.pressed(KeyCode::Q) {
+            -1.
+        } else if keyboard_input.pressed(KeyCode::E){
+            1.
+        } else {
+            0.
+        };
+
 /*         let mut actual_speed = speed.horz;
         if transform.translation.x <= 50. && transform.translation.x >= win_size.w - 50. {
             actual_speed = 0.;
@@ -65,6 +73,7 @@ fn player_movement(
 
         transform.translation.x += direction.x * speed.horz * TIME_STEP;
         transform.translation.y += direction.y * speed.vert * TIME_STEP;
+        transform.rotation *= Quat::from_rotation_z(rotation*speed.rot*TIME_STEP);
     }
 }
 
