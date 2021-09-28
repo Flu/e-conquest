@@ -33,16 +33,16 @@ fn player_spawn(
     })
     .insert(Player)
     .insert(PlayerReadyFire(true))
-    .insert(Speed::default());
+    .insert(Speed { horz: 200., vert: 200.});
 }
 
 fn player_movement(
     keyboard_input: Res<Input<KeyCode>>,
-    mut player_query: Query<(&Speed, &mut Transform, With<Player>)>,
-    win_size: Res<WinSize>
+    mut player_query: Query<(&Speed, &mut Transform, With<Player>)>
 ) {
     if let Ok((speed, mut transform, _)) = player_query.single_mut() {
-        let direction = if keyboard_input.pressed(KeyCode::A) {
+        let mut direction: Vec2 = Vec2::default();
+        direction.x = if keyboard_input.pressed(KeyCode::A) {
             -1.
         } else if keyboard_input.pressed(KeyCode::D) {
             1.
@@ -50,11 +50,21 @@ fn player_movement(
             0.
         };
 
-        let mut actual_speed = speed.0;
+        direction.y = if keyboard_input.pressed(KeyCode::W) {
+            1.
+        } else if keyboard_input.pressed(KeyCode::S) {
+            -1.
+        } else {
+            0.
+        };
+
+/*         let mut actual_speed = speed.horz;
         if transform.translation.x <= 50. && transform.translation.x >= win_size.w - 50. {
             actual_speed = 0.;
-        }
-        transform.translation.x += direction * actual_speed * TIME_STEP;
+        } */
+
+        transform.translation.x += direction.x * speed.horz * TIME_STEP;
+        transform.translation.y += direction.y * speed.vert * TIME_STEP;
     }
 }
 
@@ -101,8 +111,8 @@ fn laser_movement(
 ) {
     for (laser_entity, speed, mut laser_transform, _) in query.iter_mut() {
         let translation = &mut laser_transform.translation;
-        translation.y += speed.0 * TIME_STEP;
-        if (translation.y > win_size.h) {
+        translation.y += speed.vert * TIME_STEP;
+        if translation.y > win_size.h {
             commands.entity(laser_entity).despawn();
         }
     }
