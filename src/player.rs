@@ -59,18 +59,13 @@ fn player_movement(
         };
 
         let rotation = if keyboard_input.pressed(KeyCode::Q) {
-            -1.
-        } else if keyboard_input.pressed(KeyCode::E){
             1.
+        } else if keyboard_input.pressed(KeyCode::E){
+            -1.
         } else {
             0.
         };
-
-/*         let mut actual_speed = speed.horz;
-        if transform.translation.x <= 50. && transform.translation.x >= win_size.w - 50. {
-            actual_speed = 0.;
-        } */
-
+        
         transform.translation.x += direction.x * speed.horz * TIME_STEP;
         transform.translation.y += direction.y * speed.vert * TIME_STEP;
         transform.rotation *= Quat::from_rotation_z(rotation*speed.rot*TIME_STEP);
